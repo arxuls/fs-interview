@@ -1,0 +1,31 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["typescript", "unicorn", "oxc", "import"],
+  "categories": {
+    "correctness": "error"
+  },
+  "rules": {
+    "eslint/func-style": ["error", "declaration"],
+    "typescript/array-type": ["error", { "default": "array" }],
+    "typescript/consistent-type-definitions": ["error", "type"],
+    "typescript/consistent-type-imports": "error",
+    "import/no-default-export": "error"
+  },
+  "env": {
+    "builtin": true
+  },
+  "overrides": [
+    {
+      "files": ["apps/web/src/app/**", "apps/web/app/**", "**/*.config.*"],
+      "rules": { "import/no-default-export": "off" }
+    },
+    {
+      "files": ["apps/server/**"],
+      "rules": { "typescript/consistent-type-imports": "off" }
+    },
+    {
+      "files": ["apps/web/src/components/ui/**"],
+      "rules": { "eslint/func-style": "off" }
+    }
+  ]
+}

@@ -1,0 +1,49 @@
+{
+  "name": "interview-kit",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "type": "module",
+  "scripts": {
+    "dev": "turbo dev",
+    "build": "turbo build",
+    "check-types": "turbo check-types",
+    "dev:web": "turbo -F web dev",
+    "dev:server": "turbo -F server dev",
+    "db:push": "turbo -F @interview-kit/db db:push",
+    "db:studio": "turbo -F @interview-kit/db db:studio",
+    "db:generate": "turbo -F @interview-kit/db db:generate",
+    "db:migrate": "turbo -F @interview-kit/db db:migrate",
+    "test": "pnpm --filter web test && pnpm --filter server test && pnpm --filter @interview-kit/api test",
+    "check": "oxlint && oxfmt --write",
+    "check:deps": "syncpack list-mismatches && manypkg check",
+    "check:unused": "knip",
+    "prepare": "husky",
+    "db:seed": "pnpm -F @interview-kit/db db:seed"
+  },
+  "devDependencies": {
+    "@interview-kit/config": "workspace:*",
+    "@interview-kit/env": "workspace:*",
+    "@manypkg/cli": "^0.25.1",
+    "@types/node": "catalog:",
+    "dotenv": "catalog:",
+    "husky": "^9.1.7",
+    "knip": "^5.64.3",
+    "lint-staged": "^17.3.0",
+    "oxfmt": "^0.56.0",
+    "oxlint": "^1.79.0",
+    "syncpack": "^13.0.4",
+    "turbo": "2.10.11",
+    "typescript": "^6.0.3",
+    "zod": "catalog:"
+  },
+  "lint-staged": {
+    "*.{ts,tsx,js,jsx,mjs,cjs}": [
+      "oxlint",
+      "oxfmt --write"
+    ]
+  },
+  "packageManager": "pnpm@10.14.0"
+}
