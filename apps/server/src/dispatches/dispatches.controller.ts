@@ -14,8 +14,8 @@ export class DispatchesController {
   @TsRestHandler(contract.dispatches)
   handler() {
     return tsRestHandler(contract.dispatches, {
-      list: async () => {
-        const dispatches = await this.dispatchesService.findAll();
+      list: async ({ query }) => {
+        const dispatches = await this.dispatchesService.findAll(query.status);
         return { status: 200, body: dispatches };
       },
       update: async ({ params, body }) => {

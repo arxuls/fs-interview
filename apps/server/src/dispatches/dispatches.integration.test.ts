@@ -23,8 +23,11 @@ afterAll(async () => {
   await app.close();
 });
 
-test("GET /rest/dispatches returns the dispatch list", async () => {
-  const res = await request(app.getHttpServer()).get("/rest/dispatches").expect(200);
+test("GET /rest/dispatches filtered by status returns the dispatch list for that status", async () => {
+  const res = await request(app.getHttpServer())
+    .get("/rest/dispatches")
+    .query({ status: "delivered" })
+    .expect(200);
 
   expect(Array.isArray(res.body)).toBe(true);
   for (const dispatch of res.body) {
@@ -38,6 +41,13 @@ test("GET /rest/dispatches returns the dispatch list", async () => {
       status: expect.any(String),
     });
   }
+});
+
+test("GET /rest/dispatches rejects an unknown status", async () => {
+  await request(app.getHttpServer())
+    .get("/rest/dispatches")
+    .query({ status: "flying" })
+    .expect(400);
 });
 
 test("PATCH /rest/dispatches/:id rejects a body with unknown fields", async () => {

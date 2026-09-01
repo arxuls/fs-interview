@@ -1,28 +1,22 @@
 "use client";
+import { useState } from "react";
 
 import type { Dispatch, DispatchStatus } from "@interview-kit/api/dispatches";
-import { useQueryClient } from "@tanstack/react-query";
+import { keepPreviousData, useQueryClient } from "@tanstack/react-query";
+import { STATUS_LABELS, STATUS_ORDER, STATUS_STYLES } from "@/lib/dispatch-status";
 
 import { tsr } from "@/utils/ts-rest";
-
-const STATUS_LABELS: Record<DispatchStatus, string> = {
-  pending: "Pending",
-  in_transit: "In transit",
-  delivered: "Delivered",
-  cancelled: "Cancelled",
-};
-
-const STATUS_STYLES: Record<DispatchStatus, string> = {
-  pending: "bg-muted",
-  in_transit: "bg-amber-100 dark:bg-amber-900",
-  delivered: "bg-emerald-100 dark:bg-emerald-900",
-  cancelled: "bg-red-100 dark:bg-red-900",
-};
+import { DispatchFilter } from "@/components/dispatch-filter";
 
 export default function Home() {
   const queryClient = useQueryClient();
+
+  const [status, setStatus] = useState<DispatchStatus | undefined>(undefined);
+
   const { data, isLoading, error } = tsr.dispatches.list.useQuery({
-    queryKey: ["dispatches"],
+    queryKey: ["dispatches", "list", { status }],
+    queryData: { query: { status } },
+    placeholderData: keepPreviousData,
   });
   const { mutate: updateDispatch } = tsr.dispatches.update.useMutation({
     onSettled: () => queryClient.invalidateQueries({ queryKey: ["dispatches"] }),
@@ -36,6 +30,7 @@ export default function Home() {
     <div className="container mx-auto max-w-5xl px-4 py-8">
       <h1 className="text-xl font-semibold">Dispatch control</h1>
       <p className="text-muted-foreground mb-6 text-sm">Daily tracking of ore dispatches</p>
+      <DispatchFilter value={status} onChange={setStatus} />
 
       {isLoading && <p className="text-sm">Loading dispatches…</p>}
       {error !== null && (
@@ -70,9 +65,9 @@ export default function Home() {
                       value={dispatch.status}
                       onChange={(e) => changeStatus(dispatch.id, e.target.value as DispatchStatus)}
                     >
-                      {Object.entries(STATUS_LABELS).map(([value, label]) => (
+                      {STATUS_ORDER.map((value) => (
                         <option key={value} value={value}>
-                          {label}
+                          {STATUS_LABELS[value]}
                         </option>
                       ))}
                     </select>

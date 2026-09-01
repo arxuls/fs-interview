@@ -1,7 +1,7 @@
 import { initContract } from "@ts-rest/core";
 import { z } from "zod";
 
-import { dispatchSchema, updateDispatchSchema } from "./dispatches";
+import { dispatchSchema, listDispatchQuerySchema, updateDispatchSchema } from "./dispatches";
 
 const c = initContract();
 
@@ -17,7 +17,8 @@ export const contract = c.router({
     list: {
       method: "GET",
       path: "/dispatches",
-      summary: "List all dispatches",
+      summary: "List all dispatches, optionally filtered by status",
+      query: listDispatchQuerySchema,
       responses: {
         200: z.array(dispatchSchema),
       },

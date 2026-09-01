@@ -23,6 +23,10 @@ export const updateDispatchSchema = z
   })
   .strict();
 
+export const listDispatchQuerySchema = z.object({
+  status: dispatchStatusSchema.optional(),
+});
+
 export type Dispatch = z.infer<typeof dispatchSchema>;
 export type DispatchStatus = z.infer<typeof dispatchStatusSchema>;
 export type UpdateDispatch = z.infer<typeof updateDispatchSchema>;

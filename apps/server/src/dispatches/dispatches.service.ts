@@ -1,4 +1,4 @@
-import type { Dispatch, UpdateDispatch } from "@interview-kit/api/dispatches";
+import type { Dispatch, DispatchStatus, UpdateDispatch } from "@interview-kit/api/dispatches";
 import { db } from "@interview-kit/db";
 import { dispatches } from "@interview-kit/db/schema/dispatches";
 import { Injectable } from "@nestjs/common";
@@ -6,8 +6,12 @@ import { asc, desc, eq } from "drizzle-orm";
 
 @Injectable()
 export class DispatchesService {
-  async findAll(): Promise<Dispatch[]> {
-    return db.select().from(dispatches).orderBy(desc(dispatches.date), asc(dispatches.code));
+  async findAll(status?: DispatchStatus): Promise<Dispatch[]> {
+    return db
+      .select()
+      .from(dispatches)
+      .where(status === undefined ? undefined : eq(dispatches.status, status))
+      .orderBy(desc(dispatches.date), asc(dispatches.code));
   }
 
   async findOne(id: number): Promise<Dispatch | undefined> {
