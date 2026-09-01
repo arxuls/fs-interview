@@ -1,7 +1,13 @@
 import { initContract } from "@ts-rest/core";
 import { z } from "zod";
 
-import { dispatchSchema, listDispatchQuerySchema, updateDispatchSchema } from "./dispatches";
+import {
+  dispatchSchema,
+  dispatchStatsQuerySchema,
+  dispatchStatsSchema,
+  listDispatchQuerySchema,
+  updateDispatchSchema,
+} from "./dispatches";
 
 const c = initContract();
 
@@ -21,6 +27,15 @@ export const contract = c.router({
       query: listDispatchQuerySchema,
       responses: {
         200: z.array(dispatchSchema),
+      },
+    },
+    stats: {
+      method: "GET",
+      path: "/dispatches/stats",
+      summary: "Total tons per status for a given date",
+      query: dispatchStatsQuerySchema,
+      responses: {
+        200: dispatchStatsSchema,
       },
     },
     update: {

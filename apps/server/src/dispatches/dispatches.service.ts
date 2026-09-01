@@ -1,8 +1,14 @@
-import type { Dispatch, DispatchStatus, UpdateDispatch } from "@interview-kit/api/dispatches";
+import {
+  dispatchStatusSchema,
+  type Dispatch,
+  type DispatchStats,
+  type DispatchStatus,
+  type UpdateDispatch,
+} from "@interview-kit/api/dispatches";
 import { db } from "@interview-kit/db";
 import { dispatches } from "@interview-kit/db/schema/dispatches";
 import { Injectable } from "@nestjs/common";
-import { asc, desc, eq } from "drizzle-orm";
+import { asc, desc, eq, sum } from "drizzle-orm";
 
 @Injectable()
 export class DispatchesService {
@@ -29,5 +35,26 @@ export class DispatchesService {
       .where(eq(dispatches.id, id))
       .returning();
     return updated;
+  }
+
+  async statsByDate(date: string): Promise<DispatchStats> {
+    const rows = await db
+      .select({
+        status: dispatches.status,
+        tons: sum(dispatches.tons).mapWith(Number),
+      })
+      .from(dispatches)
+      .where(eq(dispatches.date, date))
+      .groupBy(dispatches.status);
+
+    const totals = Object.fromEntries(
+      dispatchStatusSchema.options.map((status) => [status, 0]),
+    ) as DispatchStats["totals"];
+
+    for (const row of rows) {
+      totals[row.status] = row.tons;
+    }
+
+    return { date, totals };
   }
 }

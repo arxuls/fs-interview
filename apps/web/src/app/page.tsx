@@ -7,6 +7,7 @@ import { STATUS_LABELS, STATUS_ORDER, STATUS_STYLES } from "@/lib/dispatch-statu
 
 import { tsr } from "@/utils/ts-rest";
 import { DispatchFilter } from "@/components/dispatch-filter";
+import { DispatchStats } from "@/components/dispatch-stats";
 
 export default function Home() {
   const queryClient = useQueryClient();
@@ -30,6 +31,7 @@ export default function Home() {
     <div className="container mx-auto max-w-5xl px-4 py-8">
       <h1 className="text-xl font-semibold">Dispatch control</h1>
       <p className="text-muted-foreground mb-6 text-sm">Daily tracking of ore dispatches</p>
+      <DispatchStats />
       <DispatchFilter value={status} onChange={setStatus} />
 
       {isLoading && <p className="text-sm">Loading dispatches…</p>}

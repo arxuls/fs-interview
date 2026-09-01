@@ -27,6 +27,21 @@ export const listDispatchQuerySchema = z.object({
   status: dispatchStatusSchema.optional(),
 });
 
+export const dispatchStatsQuerySchema = z.object({
+  date: z.string().date(),
+});
+
+export const dispatchStatsSchema = z.object({
+  date: z.string(),
+  totals: z.object({
+    pending: z.number(),
+    in_transit: z.number(),
+    delivered: z.number(),
+    cancelled: z.number(),
+  }),
+});
+
 export type Dispatch = z.infer<typeof dispatchSchema>;
 export type DispatchStatus = z.infer<typeof dispatchStatusSchema>;
 export type UpdateDispatch = z.infer<typeof updateDispatchSchema>;
+export type DispatchStats = z.infer<typeof dispatchStatsSchema>;

@@ -39,11 +39,12 @@ The contract in `packages/api` is the source of truth for the API: it defines ro
 
 ## Existing endpoints
 
-| Method | Route                  | Description         |
-| ------ | ---------------------- | ------------------- |
-| GET    | `/rest/dispatches`     | List all dispatches |
-| PATCH  | `/rest/dispatches/:id` | Update a dispatch   |
-| GET    | `/rest/health`         | Health check        |
+| Method | Route                    | Description                         |
+| ------ | ------------------------ | ----------------------------------- |
+| GET    | `/rest/dispatches`       | List dispatches (`?status=` filter) |
+| GET    | `/rest/dispatches/stats` | Tons per status for `?date=`        |
+| PATCH  | `/rest/dispatches/:id`   | Update a dispatch                   |
+| GET    | `/rest/health`           | Health check                        |
 
 ## Issues to implement
 

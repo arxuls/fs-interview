@@ -28,6 +28,10 @@ export class DispatchesController {
         }
         return { status: 200, body: dispatch };
       },
+      stats: async ({ query }) => {
+        const stats = await this.dispatchesService.statsByDate(query.date);
+        return { status: 200, body: stats };
+      },
     });
   }
 }
