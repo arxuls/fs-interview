@@ -27,9 +27,9 @@ pnpm dev
 
 ```
 apps/
-  web/       Next.js — pages, components, TanStack Query hooks (tsr client)
-  server/    NestJS — controllers and services implementing the contract
-packages/
+  web/       Next.js — pages, components, TanStack Query hooks (tsr client) - front
+  server/    NestJS — controllers and services implementing the contract - back
+packages/ - base de datos
   api/       ts-rest contract + Zod schemas (shared between web and server)
   db/        Drizzle schema, seed and migrations
   env/       Typed environment variables

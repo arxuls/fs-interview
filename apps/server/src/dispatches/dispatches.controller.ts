@@ -14,9 +14,13 @@ export class DispatchesController {
   @TsRestHandler(contract.dispatches)
   handler() {
     return tsRestHandler(contract.dispatches, {
-      list: async () => {
-        const dispatches = await this.dispatchesService.findAll();
+      list: async ({ query }) => {
+        const dispatches = await this.dispatchesService.findAll(query.status);
         return { status: 200, body: dispatches };
+      },
+      stats: async ({ query }) => {
+        const stats = await this.dispatchesService.getStatsByDate(query.date);
+        return { status: 200, body: stats };
       },
       update: async ({ params, body }) => {
         const dispatch = await this.dispatchesService.update(params.id, body);

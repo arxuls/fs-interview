@@ -13,6 +13,28 @@ export const dispatchSchema = z.object({
   notes: z.string().nullable(),
 });
 
+export const listDispatchesQuerySchema = z.object({
+  status: dispatchStatusSchema.optional(),
+});
+
+export const dispatchStatsQuerySchema = z.object({
+  date: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/, "Formato de fecha inválido (YYYY-MM-DD)")
+    .refine((value) => {
+      const parsedDate = new Date(`${value}T00:00:00Z`);
+      return !Number.isNaN(parsedDate.getTime()) && parsedDate.toISOString().slice(0, 10) === value;
+    }, "Fecha inválida")
+    .refine((value) => value >= "2000-01-01", "El año debe ser 2000 o posterior"),
+});
+
+export const dispatchStatsSchema = z.object({
+  pending: z.number(),
+  in_transit: z.number(),
+  delivered: z.number(),
+  cancelled: z.number(),
+});
+
 export const updateDispatchSchema = z
   .object({
     truckPlate: z.string().min(1).optional(),
@@ -25,4 +47,5 @@ export const updateDispatchSchema = z
 
 export type Dispatch = z.infer<typeof dispatchSchema>;
 export type DispatchStatus = z.infer<typeof dispatchStatusSchema>;
+export type DispatchStats = z.infer<typeof dispatchStatsSchema>;
 export type UpdateDispatch = z.infer<typeof updateDispatchSchema>;

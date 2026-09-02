@@ -2,7 +2,9 @@
 
 import type { Dispatch, DispatchStatus } from "@interview-kit/api/dispatches";
 import { useQueryClient } from "@tanstack/react-query";
+import { useState } from "react";
 
+import { DispatchStats } from "@/components/dispatch-stats";
 import { tsr } from "@/utils/ts-rest";
 
 const STATUS_LABELS: Record<DispatchStatus, string> = {
@@ -21,8 +23,10 @@ const STATUS_STYLES: Record<DispatchStatus, string> = {
 
 export default function Home() {
   const queryClient = useQueryClient();
+  const [statusFilter, setStatusFilter] = useState<DispatchStatus | "all">("all");
   const { data, isLoading, error } = tsr.dispatches.list.useQuery({
-    queryKey: ["dispatches"],
+    queryKey: ["dispatches", statusFilter],
+    queryData: statusFilter === "all" ? { query: {} } : { query: { status: statusFilter } },
   });
   const { mutate: updateDispatch } = tsr.dispatches.update.useMutation({
     onSettled: () => queryClient.invalidateQueries({ queryKey: ["dispatches"] }),
@@ -34,8 +38,30 @@ export default function Home() {
 
   return (
     <div className="container mx-auto max-w-5xl px-4 py-8">
-      <h1 className="text-xl font-semibold">Dispatch control</h1>
-      <p className="text-muted-foreground mb-6 text-sm">Daily tracking of ore dispatches</p>
+      <div className="mb-6 flex items-center justify-between gap-4">
+        <div>
+          <h1 className="text-xl font-semibold">Dispatch control</h1>
+          <p className="text-muted-foreground text-sm">Daily tracking of ore dispatches</p>
+        </div>
+
+        <label className="flex items-center gap-2 text-sm">
+          <span className="text-muted-foreground">Status</span>
+          <select
+            className="rounded-md border bg-background px-2 py-1"
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value as DispatchStatus | "all")}
+          >
+            <option value="all">All</option>
+            {Object.entries(STATUS_LABELS).map(([value, label]) => (
+              <option key={value} value={value}>
+                {label}
+              </option>
+            ))}
+          </select>
+        </label>
+      </div>
+
+      <DispatchStats />
 
       {isLoading && <p className="text-sm">Loading dispatches…</p>}
       {error !== null && (
